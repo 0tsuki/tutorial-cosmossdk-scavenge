@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -18,8 +19,11 @@ type MsgRevealSolution struct {
 	Solution     string         `json:"solution" yaml:"solution"`
 }
 
-func NewMsgRevealSolution(scavenger sdk.AccAddress, solutionHash string, solution string) MsgRevealSolution {
-	return MsgRevealSolution{Scavenger: scavenger, SolutionHash: solutionHash, Solution: solution}
+func NewMsgRevealSolution(scavenger sdk.AccAddress, solution string) MsgRevealSolution {
+	solutionHash := sha256.Sum256([]byte(solution))
+	solutionHashString := hex.EncodeToString(solutionHash[:])
+
+	return MsgRevealSolution{Scavenger: scavenger, SolutionHash: solutionHashString, Solution: solution}
 }
 
 const RevealSolutionConst = "RevealSolution"
